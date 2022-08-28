@@ -46,8 +46,8 @@ class Database{
     });
     print('Seller Added Successfully!');
   }
-  void AddProduct(String brand,String category,String name,int price){
-    FirebaseFirestore.instance.collection('Seller').doc('arjuntiwari754@gmail.com').collection('Product').add({
+  void AddProduct(String brand,String category,String name,int price ,String email){
+    FirebaseFirestore.instance.collection('Seller').doc(email).collection('Product').add({
       'brand': brand,
       'category':category,
       'name':name,
@@ -55,12 +55,26 @@ class Database{
     });
     print("Product Added Successfully!");
   }
-  void Product(String brand,String category,String name,int price){
+  void Product(String brand,String category,String name,int price,String email){
     FirebaseFirestore.instance.collection('Product').add({
       'brand': brand,
       'category':category,
       'name':name,
       'price':price,
+      'email':email,
     });
+  }
+
+  void AddCustomer(String name,String city,String zip,DateTime age,String gender,String email){
+    DateTime today=DateTime.now();
+    FirebaseFirestore.instance.collection('Customer').doc(email).collection('Details').add({
+      'name': name,
+      'city':city,
+      'zip':zip,
+      'Age':today.year-age.year,
+      'gender':gender,
+      'email':email,
+    });
+    print('Customer Added Successfully!');
   }
 }

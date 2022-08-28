@@ -37,7 +37,7 @@ class _SellerHomeState extends State<SellerHome> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[500],
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddProduct()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddProduct(widget.Email)));
         },
         child:Icon(Icons.add,color:Colors.white),
       ),

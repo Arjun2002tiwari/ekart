@@ -10,6 +10,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'CostumerHome.dart';
 import 'SignUp.dart';
 import 'UserType.dart';
 
@@ -94,7 +95,7 @@ class _LoginState extends State<Login> {
                   final snapshot = await FirebaseFirestore.instance
     .collection('Seller').doc(email.text).collection('Bussiness').get();
     if ( snapshot.size == 0 ) {
-          return;  
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CostumerHome(email.text))); 
     }
     else{
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SellerHome(email.text)));

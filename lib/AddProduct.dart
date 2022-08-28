@@ -6,7 +6,8 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class AddProduct extends StatefulWidget {
-  const AddProduct({Key? key}) : super(key: key);
+  String Email="";
+  AddProduct(this.Email,{Key? key}) : super(key: key);
 
   @override
   State<AddProduct> createState() => _AddProductState();
@@ -168,8 +169,8 @@ class _AddProductState extends State<AddProduct> {
                         _price = null;
                         _brand=null;
                       }); 
-                    Database().AddProduct(brand.text, category.text, name.text,int.parse(price.text));
-                    Database().Product(brand.text, category.text, name.text, int.parse(price.text));
+                    Database().AddProduct(brand.text, category.text, name.text,int.parse(price.text),widget.Email);
+                    Database().Product(brand.text, category.text, name.text, int.parse(price.text),widget.Email);
                     Navigator.pop(context);
                   }
                 }, 

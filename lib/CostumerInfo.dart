@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
+import 'CostumerHome.dart';
+import 'Database.dart';
+
 class CostumerInfo extends StatefulWidget {
   String email="";
   CostumerInfo(this.email,{Key? key}) : super(key: key);
@@ -13,6 +16,7 @@ class CostumerInfo extends StatefulWidget {
 }
 
 class _CostumerInfoState extends State<CostumerInfo> {
+  DateTime today=DateTime.now();
   TextEditingController name=TextEditingController();
   TextEditingController city=TextEditingController();
   TextEditingController zip=TextEditingController();
@@ -20,7 +24,17 @@ class _CostumerInfoState extends State<CostumerInfo> {
   TextEditingController gender=TextEditingController();
   TextEditingController email=TextEditingController();
 
-  
+  var _name;
+  var _city;
+  var _pin;
+  var _age;
+  var _gender;
+  var _email;
+
+  void initState() {
+    super.initState();
+    age.text='${today.day}-${today.month}-${today.year}';
+  }  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +78,21 @@ class _CostumerInfoState extends State<CostumerInfo> {
             controller: city,
               decoration: InputDecoration(
                 labelText: "city name",
-                 errorText: _cat==null?null:_cat,
+                 errorText: _city==null?null:_city,
+                labelStyle: TextStyle(fontSize: 20,color:Colors.pink[800],fontWeight: FontWeight.bold),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+            SizedBox(
+              height:30
+            ),
+            TextField(
+              controller: zip,
+              decoration: InputDecoration(
+                labelText: "Your pin code",
+                errorText: _pin==null?null:_pin,
                 labelStyle: TextStyle(fontSize: 20,color:Colors.pink[800],fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -77,7 +105,14 @@ class _CostumerInfoState extends State<CostumerInfo> {
           TextField(
             controller: age,
               decoration: InputDecoration(
-                labelText: "Date of birth",
+                suffixIcon: IconButton(
+                  icon:Icon(Icons.calendar_today),
+                  onPressed:(){
+                    selectDate(context);
+                  },
+                ),
+                labelText: "DOB",
+                errorText: _age==null?null:_age,
                 labelStyle: TextStyle(fontSize: 20,color:Colors.pink[800],fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -92,7 +127,7 @@ class _CostumerInfoState extends State<CostumerInfo> {
             controller:gender,
               decoration: InputDecoration(
                 labelText: "Gender",
-                 errorText: _phone==null?null:_phone,
+                 errorText: _gender==null?null:_gender,
                 labelStyle: TextStyle(fontSize: 20,color:Colors.pink[800],fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -106,6 +141,7 @@ class _CostumerInfoState extends State<CostumerInfo> {
             controller: email,
               decoration: InputDecoration(
                 labelText: "email",
+                errorText: _email==null?null:_email,
                 labelStyle: TextStyle(fontSize: 20,color:Colors.pink[800],fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -126,29 +162,50 @@ class _CostumerInfoState extends State<CostumerInfo> {
                   ),
                 onPressed: () {
                   if (name.text == '' ||
-                        category.text == '' ||
-                        phone.text == '') {
+                        city.text == '' ||
+                        zip.text == '' ||
+                        age.text=='' ||
+                        gender.text=='' ||
+                        email.text=='') {
                       if (name.text == '') {
                         setState(() {
-                          _name = 'Bussiness name is required';
+                          _name = 'name is required';
                         });
-                      } else if (category.text == '') {
+                      } else if (city.text == '') {
                         setState(() {
-                          _cat = 'Category is required';
+                          _city= 'City is required';
                         });
-                      } else if (phone.text == '') {
+                      } else if (zip.text == '') {
                         setState(() {
-                          _phone = 'phone number is required';
+                          _pin = 'pin code is required';
+                        });
+                      }
+                      else if (age.text == '') {
+                        setState(() {
+                          _age = 'DOB is required';
+                        });
+                      }
+                      else if (gender.text == '') {
+                        setState(() {
+                          _gender = 'gender is required';
+                        });
+                      }
+                      else if (email.text == '') {
+                        setState(() {
+                          _email = 'email is required';
                         });
                       }
                     } else {
                       setState(() {
-                        _name = null;
-                        _cat = null;
-                        _phone = null;
+                        _name=null;
+                        _city=null;
+                        _pin=null;
+                        _age=null;
+                        _gender=null;
+                        _email=null;
                       }); 
-                  database.AddSeller(name.text, category.text, email.text, phone.text);
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SellerHome(widget.Email)));
+                  Database().AddCustomer(name.text, city.text, zip.text, today,gender.text,email.text);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CostumerHome(email.text)));
                   }
                 }, 
                 child: Text("Register Now!",style:TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold)),
@@ -157,5 +214,19 @@ class _CostumerInfoState extends State<CostumerInfo> {
         ),
       ),
     );
+  }
+  Future<void> selectDate(BuildContext context) async {
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2015, 8),
+    lastDate: DateTime(2101),);
+
+    if(pickedDate!=null && pickedDate!=today){
+      setState(() {
+        today=pickedDate;
+        age.text='${today.day}-${today.month}-${today.year}';
+      });
+    }
   }
 }
